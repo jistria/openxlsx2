@@ -3943,6 +3943,23 @@ wbWorkbook <- R6::R6Class(
         getOption("openxlsx2.compresssionevel") %||%
         6L
 
+      # Set timestamps on created files and folders to the user-specified last modified time;
+      # datetime_modified. This facilitates the creation of a reproducible file.
+      Sys.setFileTime(
+        list.files(
+          path = tmpDir,
+          all.files = TRUE,
+          full.names = TRUE,
+          recursive = TRUE,
+          include.dirs = TRUE
+        ),
+        as.POSIXct(
+          self$get_properties()["datetime_modified"],
+          format = "%Y-%m-%dT%H:%M:%SZ",
+          tz = "UTC"
+        )
+      )
+      
       zipped <- zip_output(
         zip_path = tmpFile,
         source_dir = tmpDir,

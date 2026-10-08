@@ -669,3 +669,19 @@ test_that("file asserts", {
   expect_error(write_xlsx(cars, "foo/bar/baz.xlsx"), "Path to file does not exist.")
 
 })
+
+test_that("xlsx is reproducible", {
+  tempFile1 <- temp_xlsx()
+  on.exit(unlink(tempFile1), add = TRUE)
+  tempFile2 <- temp_xlsx()
+  on.exit(unlink(tempFile2), add = TRUE)
+
+  wb <- wb_workbook(creator = "test", datetime_created = as.POSIXct("2026-01-01 00:00:00"))$
+    add_worksheet()$
+    add_data(x = 1)
+
+  wb_save(wb, tempFile1)
+  wb_save(wb, tempFile2)
+
+  expect_equal(tools::md5sum(tempFile1), tools::md5sum(tempFile2), ignore_attr = TRUE)
+})
