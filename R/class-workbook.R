@@ -3959,7 +3959,7 @@ wbWorkbook <- R6::R6Class(
           tz = "UTC"
         )
       )
-      
+
       zipped <- zip_output(
         zip_path = tmpFile,
         source_dir = tmpDir,
